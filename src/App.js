@@ -35,16 +35,17 @@ const App = ({ signOut }) => {
       const notesFromAPI = apiData.data.listNotes.items;
       await Promise.all(
         notesFromAPI.map(async (note) => {
-          console.log(note);
           if (note.image) {
             const url = await Storage.get(note.name);
             note.image = url;
           }
+          console.log("note: ",note);
+          
           return note;
         })
       );
       console.log("2");
-
+      
       setNotes(notesFromAPI);
     }catch(err){
       console.error(err);
@@ -136,11 +137,16 @@ async function deleteNote({ id, name }) {
           </Text>
           <Text as="span">{note.description}</Text>
           {note.image && (
+            <div>
+            <h1>123123</h1>
             <Image
               src={note.image}
               alt={`visual aid for ${notes.name}`}
               style={{ width: 400 }}
             />
+            </div>
+
+            
           )}
           <Button variation="link" onClick={() => deleteNote(note)}>
             Delete note
