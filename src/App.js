@@ -35,6 +35,7 @@ const App = ({ signOut }) => {
       const notesFromAPI = apiData.data.listNotes.items;
       await Promise.all(
         notesFromAPI.map(async (note) => {
+          console.log(note);
           if (note.image) {
             const url = await Storage.get(note.name);
             note.image = url;
@@ -53,18 +54,25 @@ const App = ({ signOut }) => {
 
 async function createNote(event) {
   event.preventDefault();
+  console.log("trigger create")
+  console.log("event target: ", event.target);
   const form = new FormData(event.target);
+  console.log("form: ", form)
   const image = form.get("image");
+  console.log("image: ",image);
   const data = {
     name: form.get("name"),
     description: form.get("description"),
     image: image.name,
   };
+  console.log("data: ",data);
+
   if (!!data.image) await Storage.put(data.name, image);
   await API.graphql({
     query: createNoteMutation,
     variables: { input: data },
   });
+  console.log("fetch create")
   fetchNotes();
   event.target.reset();
 }
@@ -84,7 +92,15 @@ async function deleteNote({ id, name }) {
     <View className="App">
       <Heading level={1}>My Notes App</Heading>
       <View as="form" margin="3rem 0" onSubmit={createNote}>
+      <View
+        name="image"
+        as="input"
+        type="file"
+        style={{ alignSelf: "end" }}
+      />
+      
         <Flex direction="row" justifyContent="center">
+
           <TextField
             name="name"
             placeholder="Note Name"
@@ -134,12 +150,7 @@ async function deleteNote({ id, name }) {
       </View>
       <Button onClick={signOut}>Sign Out</Button>
       
-      <View
-        name="image"
-        as="input"
-        type="file"
-        style={{ alignSelf: "end" }}
-      />
+
 
     </View>
   );
