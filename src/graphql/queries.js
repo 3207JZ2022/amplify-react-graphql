@@ -59,6 +59,7 @@ export const listNotes = /* GraphQL */ `
         createdAt
         updatedAt
         __typename
+        image
       }
       nextToken
       __typename
